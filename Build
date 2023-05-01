@@ -1,0 +1,9 @@
+#!/bin/sh
+
+npm i
+yarn build
+yarn build:server
+
+
+docker buildx build --push -f container/Dockerfile --platform linux/amd64 --tag sage3/vipsit:amd64 .
+

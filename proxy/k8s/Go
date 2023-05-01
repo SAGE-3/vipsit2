@@ -1,0 +1,4 @@
+#!/bin/sh
+
+kubectl create -f vipsit.yaml
+

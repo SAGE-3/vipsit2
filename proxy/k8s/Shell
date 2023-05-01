@@ -1,0 +1,4 @@
+#!/bin/sh
+
+kubectl exec --stdin --tty vipsit-server -- /bin/bash
+

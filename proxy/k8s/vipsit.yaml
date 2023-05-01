@@ -1,0 +1,100 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vipsit-server
+  namespace: luc
+  labels:
+    app: vipsit
+spec:
+  dnsConfig:
+    nameservers:
+    - 8.8.8.8 
+  containers:
+  - image: sage3/vipsit:amd64
+    imagePullPolicy: Always
+    name: vipsit
+    ports:
+      - containerPort: 3000
+    env:
+    - name: SERVER_URL
+      value: "https://pods.evl.uic.edu/vipsit/"
+    - name: SERVER_PORT
+      value: "3000"
+    volumeMounts:
+    - name: nfs-volume
+      mountPath: /app/public
+  restartPolicy: Always
+  volumes:
+  - name: nfs-volume
+    nfs:
+      server: 10.2.100.1
+      path: /data/nfs/luc/vipsit
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vipsit-service
+  namespace: luc
+spec:
+  selector:
+    app: vipsit
+  type: NodePort
+  ports:
+  - name: one
+    port: 3000
+    protocol: TCP
+
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: vipsit-stripprefix
+  namespace: luc
+spec:
+  stripPrefix:
+    prefixes:
+      - /vipsit
+
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: vipsit-addprefix
+  namespace: luc
+spec:
+  addPrefix:
+    prefix: /vipsit/
+
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vipsit-ingress-port1
+  namespace: luc
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`pods.evl.uic.edu`) && PathPrefix(`/vipsit`)
+    kind: Rule
+    priority: 1
+    services:
+    - name: vipsit-service
+      port: 3000
+    middlewares:
+      - name: vipsit-stripprefix
+  - match: Host(`pods.evl.uic.edu`) && (PathPrefix(`/_next`) || PathPrefix(`/api`))
+    kind: Rule
+    priority: 2
+    services:
+    - name: vipsit-service
+      port: 3000
+    middlewares:
+      - name: vipsit-addprefix
+
+
