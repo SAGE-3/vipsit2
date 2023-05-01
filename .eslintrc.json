@@ -1,0 +1,7 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "quotes": "off",
+    "no-async-promise-executor": "off"
+  }
+}
