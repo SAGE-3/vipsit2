@@ -7,31 +7,31 @@ import { ExternalLinkIcon } from '@chakra-ui/icons';
 
 export default function ImageTab() {
   const [file, setFile] = useState<File | null>(null);
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+  // const [socket, setSocket] = useState<WebSocket | null>(null);
   const [newImage, setNewImage] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState<any[]>([]);
 
-  const socketInitializer = async () => {
-    console.log("Time to setup socket");
-    await fetch('api/socket');
-    const socketType = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const s = new WebSocket(`${socketType}//${window.location.host}${window.location.pathname}socket`);
-    console.log('   -> socket', s);
-    setSocket(s);
-    s.addEventListener('open', (e) => {
-      console.log('   -> socket opened', e);
-      s.send('Hello from client');
-    });
-  };
+  // const socketInitializer = async () => {
+  //   console.log("Time to setup socket");
+  //   await fetch('api/socket');
+  //   const socketType = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  //   const s = new WebSocket(`${socketType}//${window.location.host}${window.location.pathname}socket`);
+  //   console.log('   -> socket', s);
+  //   setSocket(s);
+  //   s.addEventListener('open', (e) => {
+  //     console.log('   -> socket opened', e);
+  //     s.send('Hello from client');
+  //   });
+  // };
 
-  useEffect(() => {
-    if (!socket) socketInitializer();
-    return () => {
-      if (!socket) { return; }
-      socket.close();
-    };
-  }, [socket]);
+  // useEffect(() => {
+  //   if (!socket) socketInitializer();
+  //   return () => {
+  //     if (!socket) { return; }
+  //     socket.close();
+  //   };
+  // }, [socket]);
 
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
     console.log("From onFileUploadChange", e);

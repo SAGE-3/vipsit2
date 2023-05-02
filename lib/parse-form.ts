@@ -31,10 +31,12 @@ export const parseForm = (req: NextApiRequest): Promise<{ fields: formidable.Fie
       filename: (_name, _ext, part) => {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
         const filename = `${part.name || "unknown"}-${uniqueSuffix}.${mime.getExtension(part.mimetype || "") || "unknown"}`;
+        console.log("New filename", filename);
         return filename;
       },
       filter: (part) => {
-        return part.name === "media" && (part.mimetype?.includes("image") || false);
+        // set in the upload form
+        return part.name === "media";
       },
     });
 
