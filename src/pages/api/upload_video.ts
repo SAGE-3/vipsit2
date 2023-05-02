@@ -46,7 +46,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<{ data: { url: 
             console.log("Error> video processing", error);
             res.status(500).json({ data: null, error: "Error: video processing" });
           } else {
-            res.status(200).send({ data: { url: "/" + result }, error: null });
+            res.status(200).send({ data: { url: result||'null.mp4' }, error: null });
           }
         });
       }
