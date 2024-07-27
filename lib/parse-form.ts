@@ -5,7 +5,7 @@ import * as dateFn from "date-fns";
 import formidable from "formidable";
 import { mkdir, stat } from "fs/promises";
 
-export const FormidableError = formidable.errors.FormidableError;
+// export const FormidableError = formidable.errors.FormidableError;
 
 export const parseForm = (req: NextApiRequest): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
   return new Promise(async (resolve, reject) => {

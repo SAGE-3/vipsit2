@@ -31,7 +31,7 @@ export default function VideoTab() {
       let formData = new FormData();
       formData.append("media", file);
 
-      const res = await fetch("api/upload_video", {
+      const res = await fetch(window.location.pathname + "/api/upload_video", {
         method: "POST",
         body: formData,
       });
@@ -102,7 +102,8 @@ export default function VideoTab() {
             <Box overflow={"clip"} border={"1px"}>
               {/* <Image w={200} h={120} alt="icon" src={image.image} objectFit={"cover"} /> */}
             </Box>
-            <Link download color='teal.500' href={newVideo}> <em> {newVideo}</em> <ExternalLinkIcon mx='2px' /> </Link>
+            {/* <Link download color='teal.500' href={window.location.pathname + newVideo}> <em> {newVideo}</em> <ExternalLinkIcon mx='2px' /> </Link> */}
+            <Link download color='teal.500' href={window.location.pathname + newVideo}> <em> {newVideo}</em> <ExternalLinkIcon mx='2px' /> </Link>
           </HStack>
         }
       </List >

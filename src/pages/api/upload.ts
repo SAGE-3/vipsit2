@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { parseForm, FormidableError } from "../../../lib/parse-form";
+import { parseForm } from "../../../lib/parse-form";
 var sanitize = require("sanitize-filename");
 import path from "path";
 import { rename } from "fs";
@@ -7,8 +7,8 @@ import ChildProcess from "child_process";
 import fs from "fs";
 import formidable from "formidable";
 
-var serverURL = process.env.SERVER_URL;
-// var serverURL = "https://localhost:3000/";
+var serverURL = process.env.SERVER_URL || "http://localhost:3000/";
+// var serverURL = "http://localhost:3000/";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<{ data: { url: string } | null; error: string | null }>) => {
   if (req.method !== "POST") {
@@ -82,12 +82,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<{ data: { url: 
       }
     });
   } catch (e) {
-    if (e instanceof FormidableError) {
-      res.status(e.httpCode || 400).send({ data: null, error: e.message });
-    } else {
-      console.error(e);
-      res.status(500).send({ data: null, error: "Internal Server Error" });
-    }
+    console.error(e);
+    res.status(500).send({ data: null, error: "Internal Server Error" });
   }
 };
 

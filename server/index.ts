@@ -1,5 +1,7 @@
 import express, { Request, Response } from "express";
 import next from "next";
+// import * as config from "../next.config";
+
 var cors = require("cors");
 
 const dev = process.env.NODE_ENV !== "production";
@@ -12,7 +14,9 @@ var serverPORT = Number(process.env.PORT) || 3000;
     await app.prepare();
     const server = express();
     server.use(cors());
-    server.use(express.static("public"));
+    server.use("/vipsit/assets", express.static("public"));
+    // server.use(config.basePath + "/assets", express.static("public"));
+    // server.use(express.static("public"));
     server.all("*", (req: Request, res: Response) => {
       return handle(req, res);
     });

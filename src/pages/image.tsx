@@ -2,36 +2,48 @@ import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import {
   Heading, FormControl, FormLabel, FormHelperText, Input, Button, Link, Image, HStack,
   List, ListItem, Box, Progress,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
+
+// Get the base path, or window.location.pathname
+// import { useRouter } from 'next/router';
+// const router = useRouter();
+// console.log("basePath>", router.basePath);
 
 export default function ImageTab() {
   const [file, setFile] = useState<File | null>(null);
-  // const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [socket, setSocket] = useState<WebSocket | null>(null);
   const [newImage, setNewImage] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState<any[]>([]);
 
-  // const socketInitializer = async () => {
-  //   console.log("Time to setup socket");
-  //   await fetch('api/socket');
-  //   const socketType = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  //   const s = new WebSocket(`${socketType}//${window.location.host}${window.location.pathname}socket`);
-  //   console.log('   -> socket', s);
-  //   setSocket(s);
-  //   s.addEventListener('open', (e) => {
-  //     console.log('   -> socket opened', e);
-  //     s.send('Hello from client');
-  //   });
-  // };
+  const socketInitializer = async () => {
+    const socketURL = window.location.pathname + '/api/socket';
+    console.log('Setup socket>', socketURL);
+    await fetch(socketURL);
+    const socketType = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const pathname = window.location.pathname;
+    let s: WebSocket;
+    if (pathname.endsWith('/')) {
+      s = new WebSocket(`${socketType}//${window.location.host}${window.location.pathname}socket`);
+    } else {
+      s = new WebSocket(`${socketType}//${window.location.host}${window.location.pathname}/socket`);
+    }
+    console.log('   -> socket', s);
+    setSocket(s);
+    s.addEventListener('open', (e) => {
+      console.log('   -> socket opened', e);
+      s.send('Hello from client');
+    });
+  };
 
-  // useEffect(() => {
-  //   if (!socket) socketInitializer();
-  //   return () => {
-  //     if (!socket) { return; }
-  //     socket.close();
-  //   };
-  // }, [socket]);
+  useEffect(() => {
+    if (!socket) socketInitializer();
+    return () => {
+      if (!socket) { return; }
+      socket.close();
+    };
+  }, [socket]);
 
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
     console.log("From onFileUploadChange", e);
@@ -57,7 +69,7 @@ export default function ImageTab() {
       let formData = new FormData();
       formData.append("media", file);
 
-      const res = await fetch("api/upload", {
+      const res = await fetch(window.location.pathname + "/api/upload", {
         method: "POST",
         body: formData,
       });
@@ -86,7 +98,7 @@ export default function ImageTab() {
   useEffect(() => {
     async function getImages() {
       // get the list of images
-      const res = await fetch("api/images");
+      const res = await fetch(window.location.pathname + "/api/images");
       const json = await res.json();
       if (!json.error) {
         const images = json.data;
@@ -131,9 +143,9 @@ export default function ImageTab() {
         {images.map((image: any, i: number) => (<ListItem key={i} >
           <HStack p={1}>
             <Box overflow={"clip"} border={"1px"}>
-              <Image w={200} h={120} alt="icon" src={image.image} objectFit={"cover"} />
+              <Image w={200} h={120} alt="icon" src={window.location.pathname + image.image} objectFit={"cover"} />
             </Box>
-            <Link download color='teal.500' href={image.link}> <em> {image.name}</em> <ExternalLinkIcon mx='2px' /> </Link>
+            <Link download color='teal.500' href={window.location.pathname + image.link}> <em> {image.name}</em> <ExternalLinkIcon mx='2px' /> </Link>
           </HStack>
         </ListItem>
         ))}

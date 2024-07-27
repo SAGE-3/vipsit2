@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { parseForm, FormidableError } from "../../../lib/parse-form";
+import { parseForm } from "../../../lib/parse-form";
 var sanitize = require("sanitize-filename");
 import path from "path";
 import { rename } from "fs";
@@ -46,18 +46,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<{ data: { url: 
             console.log("Error> video processing", error);
             res.status(500).json({ data: null, error: "Error: video processing" });
           } else {
-            res.status(200).send({ data: { url: result||'null.mp4' }, error: null });
+            res.status(200).send({ data: { url: "/assets/" + result || "null.mp4" }, error: null });
           }
         });
       }
     });
   } catch (e) {
-    if (e instanceof FormidableError) {
-      res.status(e.httpCode || 400).send({ data: null, error: e.message });
-    } else {
-      console.error(e);
-      res.status(500).send({ data: null, error: "Internal Server Error" });
-    }
+    res.status(500).send({ data: null, error: "Internal Server Error" });
   }
 };
 

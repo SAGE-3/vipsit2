@@ -1,16 +1,16 @@
-// import WebSocket, { WebSocketServer } from "ws";
 import { WebSocketServer } from "ws";
+// import * as config from "next.config";
 
 const SocketHandler = (req, res) => {
   if (res.socket.server.ws) {
     console.log("Socket is already running");
   } else {
     console.log("Socket is initializing");
+    const basePath = "/vipsit";
     const apiWebSocketServer = new WebSocketServer({
       server: res.socket.server,
-      path: "/socket",
+      path: basePath + "/socket",
     });
-    // const apiWebSocketServer = new WebSocketServer({ noServer: true });
     res.socket.server.ws = apiWebSocketServer;
     apiWebSocketServer.on("connection", (socket) => {
       console.log("Socket connected");
