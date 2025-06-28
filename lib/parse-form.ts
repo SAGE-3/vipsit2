@@ -7,9 +7,14 @@ import { mkdir, stat } from "fs/promises";
 
 // export const FormidableError = formidable.errors.FormidableError;
 
-export const parseForm = (req: NextApiRequest): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
+export const parseForm = (
+  req: NextApiRequest
+): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
   return new Promise(async (resolve, reject) => {
-    const uploadDir = join(process.env.ROOT_DIR || process.cwd(), `/uploads/${dateFn.format(Date.now(), "dd-MM-Y")}`);
+    const uploadDir = join(
+      process.env.ROOT_DIR || process.cwd(),
+      `/uploads/${dateFn.format(Date.now(), "dd-MM-y")}`
+    );
 
     try {
       await stat(uploadDir);
@@ -26,11 +31,13 @@ export const parseForm = (req: NextApiRequest): Promise<{ fields: formidable.Fie
     const form = formidable({
       multiples: false,
       maxFiles: 1,
-      maxFileSize: 10 * 1024 * 1024 * 1024, // 10gb
+      maxFileSize: 20 * 1024 * 1024 * 1024, // 20gb
       uploadDir,
       filename: (_name, _ext, part) => {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-        const filename = `${part.name || "unknown"}-${uniqueSuffix}.${mime.getExtension(part.mimetype || "") || "unknown"}`;
+        const filename = `${part.name || "unknown"}-${uniqueSuffix}.${
+          mime.getExtension(part.mimetype || "") || "unknown"
+        }`;
         console.log("New filename", filename);
         return filename;
       },
