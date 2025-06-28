@@ -55,7 +55,7 @@ export default function ImageTab() {
       return;
     }
     const ff = fileInput.files[0];
-    if (!ff.type.startsWith("image")) {
+    if (!ff.type.startsWith("image") && !ff.type.startsWith("application/x-photoshop")) {
       return;
     }
     setFile(ff);
