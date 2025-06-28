@@ -26,6 +26,7 @@ ENV NODE_ENV=production
 EXPOSE ${SERVER_PORT}
 
 ENV VIPS_CONCURRENCY=8
+RUN rm  /etc/ImageMagick-6/policy.xml
 
 COPY ./.next .next
 COPY ./next.config.js next.config.js
